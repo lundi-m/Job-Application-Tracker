@@ -2,6 +2,7 @@ package dao;
 
 import model.ApplicationStatus;
 import model.JobApplication;
+import model.JobType;
 import util.DatabaseConnection;
 
 import java.sql.*;
@@ -20,7 +21,7 @@ public class JobApplicationDAO {
 
             statement.setString(1, application.getCompanyName());
             statement.setString(2, application.getJobTitle());
-            statement.setString(3, application.getJobType());
+            statement.setString(3, application.getJobType().name());
             statement.setString(4, application.getLocation());
             statement.setDate(5, Date.valueOf(application.getDateApplied()));
             statement.setString(6, application.getStatus().name());
@@ -48,7 +49,7 @@ public class JobApplicationDAO {
                 application = new JobApplication(resultSet.getInt("id"),
                         resultSet.getString("company_name"),
                         resultSet.getString("job_title"),
-                        resultSet.getString("job_type"),
+                        JobType.valueOf(resultSet.getString("job_type")),
                         resultSet.getString("location"),
                         resultSet.getDate("date_applied").toLocalDate(),
                         ApplicationStatus.valueOf(resultSet.getString("status"))
@@ -75,7 +76,7 @@ public class JobApplicationDAO {
                 resultSet.getInt("id"),
                 resultSet.getString("company_name"),
                 resultSet.getString("job_title"),
-                resultSet.getString("job_type"),
+                JobType.valueOf(resultSet.getString("job_type")),
                 resultSet.getString("location"),
                 resultSet.getDate ("date_applied").toLocalDate(),
                 ApplicationStatus.valueOf(resultSet.getString("status"))
