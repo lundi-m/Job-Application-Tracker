@@ -7,7 +7,7 @@ public class JobApplication {
     private int id;
     private String companyName;
     private String jobTitle;
-    private String jobType;
+    private JobType jobType;
     private String location;
     private LocalDate dateApplied;
     private ApplicationStatus status;
@@ -15,7 +15,7 @@ public class JobApplication {
     public JobApplication(int id,
                           String companyName,
                           String jobTitle,
-                          String jobType,
+                          JobType jobType,
                           String location,
                           LocalDate dateApplied,
                           ApplicationStatus status) {
@@ -31,7 +31,7 @@ public class JobApplication {
     // Constructor for writing in the database
     public JobApplication(String companyName,
                           String jobTitle,
-                          String jobType,
+                          JobType jobType,
                           String location) {
         this.companyName = companyName;
         this.jobTitle = jobTitle;
@@ -65,11 +65,11 @@ public class JobApplication {
         this.jobTitle = jobTitle;
     }
 
-    public String getJobType() {
+    public JobType getJobType() {
         return jobType;
     }
 
-    public void setJobType(String jobType) {
+    public void setJobType(JobType jobType) {
         this.jobType = jobType;
     }
 

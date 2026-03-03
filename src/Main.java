@@ -1,5 +1,7 @@
 import dao.JobApplicationDAO;
+import model.ApplicationStatus;
 import model.JobApplication;
+import model.JobType;
 import service.JobApplicationService;
 
 import java.util.List;
@@ -7,8 +9,7 @@ import java.util.Scanner;
 
 public class Main {
 
-    private final static Scanner scanner = new Scanner(System.in);
-
+    private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
 
@@ -17,13 +18,19 @@ public class Main {
 
         boolean isRunning = true;
 
-        mainMenu();
-
-        while (isRunning){
+        while (isRunning) {
+            mainMenu();
             System.out.print("Enter Option: ");
-            int option = scanner.nextInt();
 
-            switch (option){
+            int option;
+            try {
+                option = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number 1-5.");
+                continue;
+            }
+
+            switch (option) {
                 case 1 -> addApplication(service);
                 case 2 -> viewApplications(service);
                 case 3 -> updateApplicationStatus(service);
@@ -32,89 +39,110 @@ public class Main {
                     System.out.println("=== Goodbye ===");
                     isRunning = false;
                 }
+                default -> System.out.println("Invalid choice. Please select 1-5.");
             }
         }
     }
 
-    private static void mainMenu(){
-        System.out.println("=== Job Application Tracker ===");
+    private static void mainMenu() {
+        System.out.println("\n=== Job Application Tracker ===");
         System.out.println("1. Add Application");
         System.out.println("2. View Applications");
-        System.out.println("3. Update Application ");
+        System.out.println("3. Update Application Status");
         System.out.println("4. Delete Application");
         System.out.println("5. Exit");
-        System.out.println();
     }
 
     // Add new Job Application
-    private static void addApplication(JobApplicationService service){
+    private static void addApplication(JobApplicationService service) {
+        try {
+            System.out.print("Company Name: ");
+            String companyName = scanner.nextLine();
 
-        try{
-            System.out.print("Company Name : ");
-            String companyName = scanner.next();
+            System.out.print("Job Title: ");
+            String jobTitle = scanner.nextLine();
 
-            System.out.print("Job Title : ");
-            String jobTitle = scanner.next();
+            System.out.print("Job Type: ");
+            String jobTypeInput = scanner.nextLine();
 
-            System.out.print("Job Type : ");
-            String jobType = scanner.next();
-            scanner.nextLine();
+            System.out.print("Location: ");
+            String location = scanner.nextLine();
 
-            System.out.print("Location : ");
-            String location = scanner.next();
-
+            JobType jobType = JobType.fromString(jobTypeInput);
             service.newJobApplication(companyName, jobTitle, jobType, location);
+
             System.out.println("Application created successfully.");
-        }catch (Exception e){
-            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
         }
     }
 
     // View All Job Applications
-    private static void viewApplications(JobApplicationService service){
+    private static void viewApplications(JobApplicationService service) {
         List<JobApplication> jobApplications = service.getAllApplications();
 
-        if (jobApplications.isEmpty()){
-            System.out.println("No job applications found");
+        if (jobApplications.isEmpty()) {
+            System.out.println("No job applications found.");
             return;
         }
 
-        for (JobApplication jobApplication : jobApplications){
-            System.out.println(jobApplication.toString());
+        for (JobApplication jobApplication : jobApplications) {
+            System.out.println(jobApplication);
         }
     }
 
     // Update an existing job application
-    private static void updateApplicationStatus(JobApplicationService service){
+    private static void updateApplicationStatus(JobApplicationService service) {
+        List<JobApplication> jobApplications = service.getAllApplications();
 
-        viewApplications(service);
-        try{
-            scanner.nextLine();
-            System.out.print("Enter application ID : ");
-            int id = scanner.nextInt();
+        if (jobApplications.isEmpty()) {
+            System.out.println("No job applications to update.");
+            return; // exit early if list is empty
+        }
 
-            System.out.print("Enter new application status(APPLIED, INTERVIEW, OFFER, REJECTED): ");
-            String status = scanner.next();
+        // show applications
+        for (JobApplication jobApplication : jobApplications) {
+            System.out.println(jobApplication.toString());
+        }
 
-            service.updateApplicationStatus(id, status);
+        try {
+            System.out.print("Enter application ID: ");
+            int id = Integer.parseInt(scanner.nextLine());
 
+            System.out.print("Enter new application status (APPLIED, INTERVIEW, OFFER, REJECTED): ");
+            String userStatus = scanner.nextLine().toUpperCase();
+
+            ApplicationStatus status = ApplicationStatus.fromString(userStatus);
+            service.updateApplicationStatus(id, status.name());
+
+            System.out.println("Status updated successfully.");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error: " + e.getMessage());
         }
     }
 
-    //Delete Application
-    private static void deleteApplication(JobApplicationService service){
-        try{
-            System.out.print("Enter application id to delete: ");
-            int id = scanner.nextInt();
+    // Delete Application
+    private static void deleteApplication(JobApplicationService service) {
+        List<JobApplication> jobApplications = service.getAllApplications();
 
-             service.deleteApplication(id);
-        }catch(Exception e){
-            System.out.println(e.getMessage());
+        if (jobApplications.isEmpty()) {
+            System.out.println("No job applications to update.");
+            return;
         }
 
+        // show applications
+        for (JobApplication jobApplication : jobApplications) {
+            System.out.println(jobApplication.toString());
+        }
+
+        try {
+            System.out.print("Enter application ID to delete: ");
+            int id = Integer.parseInt(scanner.nextLine());
+
+            service.deleteApplication(id);
+            System.out.println("Application deleted successfully.");
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 }
-
-

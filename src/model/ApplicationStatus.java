@@ -14,7 +14,6 @@ public enum ApplicationStatus {
                 return status;
             }
         }
-
         throw new IllegalArgumentException("Invalid Status: " + userStatus);
     }
 }
