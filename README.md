@@ -8,6 +8,8 @@ A console-based Java application for managing job applications, built using laye
 
 - View all applications
 
+- Find applications using application status
+
 - Update application status
 
 - Delete an application
