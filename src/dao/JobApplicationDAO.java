@@ -60,7 +60,42 @@ public class JobApplicationDAO {
         }
         return application;
     }
-    // Job Applications
+
+    // Find Job Application using Application status
+    public List<JobApplication> findByAppStatus(ApplicationStatus status){
+        List<JobApplication> jobApplications = new ArrayList<>();
+
+        String query = "SELECT * FROM job_applications WHERE status = ?";
+
+        JobApplication application = null;
+
+        try(Connection connection = DatabaseConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)){
+
+            statement.setString(1, status.name());
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()){
+                 application = new JobApplication(
+                        resultSet.getInt("id"),
+                        resultSet.getString("company_name"),
+                        resultSet.getString("job_title"),
+                        JobType.valueOf(resultSet.getString("job_type")),
+                        resultSet.getString("location"),
+                        resultSet.getDate ("date_applied").toLocalDate(),
+                        ApplicationStatus.valueOf(resultSet.getString("status"))
+                );
+
+                jobApplications.add(application);
+            }
+
+        }catch (SQLException sqlException){
+            sqlException.printStackTrace();
+        }
+        return jobApplications;
+    }
+
+    // View all Job Applications
     public List<JobApplication> viewAllApplications(){
 
         List<JobApplication> jobApplications = new ArrayList<>();
