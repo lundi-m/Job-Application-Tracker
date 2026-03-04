@@ -92,6 +92,28 @@ public class Main {
         }
     }
 
+    private static void findByStatus(JobApplicationService service){
+
+        System.out.print("Enter status (APPLIED, INTERVIEW, REJECTED, OFFER, ACCEPTED): ");
+        String userStatus = scanner.nextLine();
+
+        try{
+           List<JobApplication> applications =  service.findByStatus(userStatus);
+
+           if (applications.isEmpty()){
+               System.out.println("Applications with status: " + userStatus + " are not found.");
+               return;
+           }
+
+            for (JobApplication application : applications){
+                System.out.println(application.toString());
+            }
+
+        }catch (Exception e){
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
     // Update an existing job application
     private static void updateApplicationStatus(JobApplicationService service) {
         List<JobApplication> jobApplications = service.getAllApplications();
