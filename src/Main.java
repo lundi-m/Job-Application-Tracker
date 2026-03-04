@@ -33,9 +33,10 @@ public class Main {
             switch (option) {
                 case 1 -> addApplication(service);
                 case 2 -> viewApplications(service);
-                case 3 -> updateApplicationStatus(service);
-                case 4 -> deleteApplication(service);
-                case 5 -> {
+                case 3 -> findByStatus(service);
+                case 4 -> updateApplicationStatus(service);
+                case 5 -> deleteApplication(service);
+                case 6 -> {
                     System.out.println("=== Goodbye ===");
                     isRunning = false;
                 }
