@@ -33,9 +33,10 @@ public class Main {
             switch (option) {
                 case 1 -> addApplication(service);
                 case 2 -> viewApplications(service);
-                case 3 -> updateApplicationStatus(service);
-                case 4 -> deleteApplication(service);
-                case 5 -> {
+                case 3 -> findByStatus(service);
+                case 4 -> updateApplicationStatus(service);
+                case 5 -> deleteApplication(service);
+                case 6 -> {
                     System.out.println("=== Goodbye ===");
                     isRunning = false;
                 }
@@ -88,6 +89,28 @@ public class Main {
 
         for (JobApplication jobApplication : jobApplications) {
             System.out.println(jobApplication);
+        }
+    }
+
+    private static void findByStatus(JobApplicationService service){
+
+        System.out.print("Enter status (APPLIED, INTERVIEW, REJECTED, OFFER, ACCEPTED): ");
+        String userStatus = scanner.nextLine();
+
+        try{
+           List<JobApplication> applications =  service.findByStatus(userStatus);
+
+           if (applications.isEmpty()){
+               System.out.println("Applications with status: " + userStatus + " are not found.");
+               return;
+           }
+
+            for (JobApplication application : applications){
+                System.out.println(application.toString());
+            }
+
+        }catch (Exception e){
+            System.out.println("Error: " + e.getMessage());
         }
     }
 

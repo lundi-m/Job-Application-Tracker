@@ -40,6 +40,24 @@ public class JobApplicationService {
         return dao.viewAllApplications();
     }
 
+    // Find Applications using Application Status
+    public List<JobApplication> findByStatus(String userStatus) {
+        ApplicationStatus status;
+
+        try {
+            status = ApplicationStatus.fromString(userStatus.toUpperCase());
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid Status");
+        }
+
+        List<JobApplication> applications = dao.findByAppStatus(status);
+
+        if (applications.isEmpty()) {
+            System.out.println("Applications with status : " + status + " are not found.");
+        }
+        return applications;
+    }
+
     // Update Application Status
     public void updateApplicationStatus(int id, String newUserStatus){
 
